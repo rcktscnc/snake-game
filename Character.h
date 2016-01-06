@@ -7,8 +7,8 @@
 namespace asd {
 
 	const int BODY_SCALE = 20;
-	const int WORLD_WIDTH = BODY_SCALE * 40;
-	const int WORLD_HEIGHT = BODY_SCALE * 30;
+	const int WORLD_WIDTH = BODY_SCALE * 10;
+	const int WORLD_HEIGHT = BODY_SCALE * 10;
 
 	class Character : public Entity {
 	private:
@@ -63,8 +63,8 @@ namespace asd {
 	}
 
 	void Character::new_location(int x, int y) {
-		pos.x = x;
-		pos.y = y;
+		pos.x = (float)x;
+		pos.y = (float)y;
 		shape.setPosition(pos);
 	}
 

@@ -3,6 +3,7 @@
 
 #include "Character.h"
 #include <vector>
+
 namespace asd {
 
 	enum Direction {
@@ -34,7 +35,7 @@ namespace asd {
 		size(3)		
 	{
 		for (int i = 0; i < size; i++) {
-			body_position.push_back(sf::RectangleShape(sf::Vector2f(BODY_SCALE, BODY_SCALE)));
+			body_position.push_back(sf::RectangleShape(sf::Vector2f((float)BODY_SCALE, (float)BODY_SCALE)));
 			body_position[i].setPosition(_pos.x - ((i+1) * BODY_SCALE), _pos.y);
 		}
 	}

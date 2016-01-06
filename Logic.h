@@ -7,7 +7,7 @@
 
 namespace asd {
 
-	const int SPEED = 200;
+	const int SPEED = 100;
 
 	class Logic {
 	private:
@@ -28,10 +28,10 @@ namespace asd {
 
 	Logic::Logic(sf::RenderWindow& _window):
 		snake("snake-block.png",
-			sf::Vector2f(asd::BODY_SCALE, asd::BODY_SCALE),
+			sf::Vector2f((float)asd::BODY_SCALE, (float)asd::BODY_SCALE),
 			sf::Vector2f(0, 0)),
 		food("snake-block.png", 
-			sf::Vector2f(asd::BODY_SCALE, asd::BODY_SCALE),
+			sf::Vector2f((float)asd::BODY_SCALE, (float)asd::BODY_SCALE),
 			sf::Vector2f(0, 0)),
 		window(_window)
 	{
@@ -42,7 +42,7 @@ namespace asd {
 	void Logic::move_snake() {
 		if (timer.getElapsedTime().asMilliseconds() >= SPEED) {
 			snake.move();
-			timer.restart(); 
+			timer.restart();
 			if (collision()) { std::cout << "COLLISION!" << std::endl; }
 		}
 	}
@@ -65,7 +65,7 @@ namespace asd {
 
 	void Logic::move_food() {
 		int x, y;
-		std::srand(std::time(0));
+		std::srand((unsigned int)std::time(0));
 		while (true) {
 			do {
 				x = (std::rand() % (int)(WORLD_WIDTH - BODY_SCALE));
@@ -75,7 +75,8 @@ namespace asd {
 				y = (std::rand() % (int)(WORLD_HEIGHT - BODY_SCALE));
 			} while (y % BODY_SCALE != 0);
 
-			if (snake.body_collision(sf::Vector2f(x, y)) == false)
+			if (snake.body_collision(sf::Vector2f((float)x, (float)y)) == false &&
+				food.get_pos() != sf::Vector2f((float)x, (float)y))
 				break;
 		}
 		food.new_location(x, y);

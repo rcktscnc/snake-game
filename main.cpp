@@ -1,12 +1,12 @@
 //Dependencies for static libraries: winmm;gdi32;opengl32;libfreetype;libjpeg;s
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Logic.h"
 
 
 int main(int argc, char **argv) {
-	sf::RenderWindow window(sf::VideoMode(asd::WORLD_WIDTH, asd::WORLD_HEIGHT), "MilleniumTEKNoobleSnakeBIT-E", sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(asd::WORLD_WIDTH, asd::WORLD_HEIGHT),
+		"MilleniumTEKNoobleSnakeBIT-E", sf::Style::Close);
 	window.setKeyRepeatEnabled(false);
 
 	sf::Clock clock;
