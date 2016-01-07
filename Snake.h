@@ -2,6 +2,7 @@
 #define _SNAKE_H
 
 #include "Character.h"
+#include <SFML/Audio.hpp>
 #include <vector>
 
 namespace asd {
@@ -18,6 +19,10 @@ namespace asd {
 		Direction direction;
 		int size;
 		std::vector<sf::RectangleShape> body_position;
+		sf::SoundBuffer eat_sound_buffer;
+		sf::Sound eat_sound;
+		sf::SoundBuffer death_sound_buffer;
+		sf::Sound death_sound;
 	public:
 		Snake(const char* file_name, sf::Vector2f _shape, const sf::Vector2f& _pos);
 		void move();
@@ -27,17 +32,26 @@ namespace asd {
 		void eat();
 		bool collision();
 		bool body_collision(const sf::Vector2f& _pos);
+		int get_size();
 	};
 
 	Snake::Snake(const char* file_name, sf::Vector2f _shape, const sf::Vector2f& _pos):
 		Character(file_name, _shape, _pos),
-		direction(Direction::RIGHT), 
+		direction(Direction::RIGHT),
 		size(3)		
 	{
 		for (int i = 0; i < size; i++) {
 			body_position.push_back(sf::RectangleShape(sf::Vector2f((float)BODY_SCALE, (float)BODY_SCALE)));
 			body_position[i].setPosition(_pos.x - ((i+1) * BODY_SCALE), _pos.y);
 		}
+		eat_sound_buffer.loadFromFile("eat-sound.ogg");
+		eat_sound.setBuffer(eat_sound_buffer);
+		eat_sound.setVolume(10);
+		eat_sound.setPitch(1.5);
+
+		death_sound_buffer.loadFromFile("snake-death-no-scream.ogg");
+		death_sound.setBuffer(death_sound_buffer);
+		death_sound.setVolume(10);
 	}
 
 	void Snake::move() {
@@ -81,11 +95,13 @@ namespace asd {
 	void Snake::eat() {
 		++size;
 		body_position.push_back(body_position.back());
+		eat_sound.play();
 	}
 
 	bool Snake::collision() {
 		for (auto& e : body_position) {
 			if (e.getPosition() == Character::get_pos()) {
+				death_sound.play();
 				return true;
 			}
 		}
@@ -94,17 +110,18 @@ namespace asd {
 			Character::get_pos().y > WORLD_HEIGHT - BODY_SCALE ||
 			Character::get_pos().y < 0)
 		{
+			death_sound.play();
 			return true;
 		}
 		return false;
 	}
 
 	bool Snake::body_collision(const sf::Vector2f& _pos) {
-		for (auto& e : body_position) 
+		for (auto& e : body_position)
 			if (e.getPosition() == _pos) return true;
-
 		return false;
 	}
 
+	int Snake::get_size() { return size; }
 }
 #endif // _SNAKE_H

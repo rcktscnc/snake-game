@@ -6,9 +6,9 @@
 
 namespace asd {
 
-	const int BODY_SCALE = 20;
-	const int WORLD_WIDTH = BODY_SCALE * 10;
-	const int WORLD_HEIGHT = BODY_SCALE * 10;
+	const int BODY_SCALE = 15;
+	const int WORLD_WIDTH = BODY_SCALE * 20;
+	const int WORLD_HEIGHT = BODY_SCALE * 20;
 
 	class Character : public Entity {
 	private:

@@ -1,13 +1,15 @@
 #ifndef _LOGIC_H
 #define _LOGIC_H
 
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+
 #include "Snake.h"
 #include <random>
 #include <ctime>
 
 namespace asd {
 
-	const int SPEED = 100;
+	const int DELAY = 150;
 
 	class Logic {
 	private:
@@ -15,15 +17,20 @@ namespace asd {
 		Character food;
 		sf::Clock timer;
 		sf::Clock last_turn;
+		sf::SoundBuffer song_sound_buffer;
+		sf::Sound song_sound;
 		sf::RenderWindow& window;
 	public:
 		Logic(sf::RenderWindow& _window);
-		void move_snake();
+		bool move_snake();
 		void draw();
 		void set_direction(Direction direction);
 		void eat();
 		void move_food();
 		bool collision();
+		void play_music();
+		void stop_music();
+		bool check_win();
 	};
 
 	Logic::Logic(sf::RenderWindow& _window):
@@ -37,14 +44,17 @@ namespace asd {
 	{
 		food.color(255, 50, 50);
 		move_food();
+		song_sound_buffer.loadFromFile("tetris-song.ogg");
+		song_sound.setBuffer(song_sound_buffer);
 	}
 
-	void Logic::move_snake() {
-		if (timer.getElapsedTime().asMilliseconds() >= SPEED) {
+	bool Logic::move_snake() {
+		if (timer.getElapsedTime().asMilliseconds() >= DELAY) {
 			snake.move();
 			timer.restart();
-			if (collision()) { std::cout << "COLLISION!" << std::endl; }
+			if (collision()) return false;
 		}
+		return true;
 	}
 
 	void Logic::draw() {
@@ -53,7 +63,7 @@ namespace asd {
 	}
 
 	void Logic::set_direction(Direction direction) {
-		if (last_turn.getElapsedTime().asMilliseconds() >= SPEED &&
+		if (last_turn.getElapsedTime().asMilliseconds() >= DELAY &&
 			direction != snake.get_direction())
 		{
 			snake.set_direction(direction);
@@ -84,12 +94,23 @@ namespace asd {
 
 	bool Logic::collision() {
 		if (snake.get_pos() == food.get_pos()) {
-			std::cout << snake.get_pos().x << "\n";
 			move_food();
 			snake.eat();
 		}
 		return snake.collision(); 
 	}
 
+	void Logic::play_music() { 
+		song_sound.setLoop(true);
+		song_sound.setPitch(0.8f);
+		song_sound.setVolume(5);
+		song_sound.play();
+	}
+
+	void Logic::stop_music() { song_sound.pause(); }
+
+	bool Logic::check_win() {
+		return snake.get_size() == (WORLD_WIDTH / BODY_SCALE) * (WORLD_HEIGHT / BODY_SCALE) ? true : false;
+	}
 }
 #endif // _LOGIC_H

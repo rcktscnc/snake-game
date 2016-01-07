@@ -12,6 +12,9 @@ int main(int argc, char **argv) {
 	sf::Clock clock;
 
 	asd::Logic manager(window);
+	manager.play_music();
+
+	bool stop_game = false;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -27,15 +30,25 @@ int main(int argc, char **argv) {
 					{ manager.set_direction(asd::Direction::DOWN); }
 				if (event.key.code == sf::Keyboard::D) 
 					{ manager.set_direction(asd::Direction::RIGHT); }
-				if (event.key.code == sf::Keyboard::E) 
-					{ manager.eat(); }
+				/*if (event.key.code == sf::Keyboard::E) 
+					{ manager.eat(); }*/
 			}
 		}
 
-		manager.move_snake();
-		window.clear();
-		manager.draw();
-		window.display();
+		if (stop_game == false) {
+			if (manager.check_win() == true) {
+				stop_game = true;
+			}
+			else if (manager.move_snake() == false) {
+				manager.stop_music();
+				stop_game = true;
+			}
+			else {
+				window.clear();
+				manager.draw();
+				window.display();
+			}
+		}
 	}
 	return 0;
 }
